@@ -20,13 +20,16 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
 import org.openftc.apriltag.AprilTagDetection;
-import org.openftc.easyopencv.*;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @TeleOp
-public class CombinationTesting extends LinearOpMode {
+public class ControlledDetection extends LinearOpMode {
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
@@ -55,43 +58,38 @@ public class CombinationTesting extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        aprilTagInitialize();
+        cameraInitialize();
 
         waitForStart();
         telemetry.setMsTransmissionInterval(50);
         while (opModeIsActive()) {
-            checkForAprilTag();
-
+            if(gamepad1.a){
+                aprilTagMode();
+                detectAprilTag = true;
+            }
+            if(gamepad1.b){
+                objectDetectionMode();
+                detectAprilTag = false;
+            }
+            if(detectAprilTag) {
+                checkForAprilTag();
+            }else{
+                telemetry.addData("Coordinate", "(" + (int) cx + ", " + (int) cy + ")");
+                telemetry.addData("Distance in Inch", (getDistance(width)));
+                telemetry.update();
+            }
             sleep(20);
 
         }
     }
-    public void aprilTagInitialize() {
+    public void cameraInitialize() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("CameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
         if(detectAprilTag) {
-            camera.setPipeline(aprilTagDetectionPipeline);
-            camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-                @Override
-                public void onOpened() {
-                    camera.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
-                }
-
-                @Override
-                public void onError(int i) {
-
-                }
-            });
+            aprilTagMode();
         }else{
-
-
-            camera.openCameraDevice();
-            camera.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
-            camera.setPipeline(new CombinationTesting.YellowBlobDetectionPipeline());
-            FtcDashboard dashboard = FtcDashboard.getInstance();
-            telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
-            FtcDashboard.getInstance().startCameraStream(camera, 30);
+            objectDetectionMode();
         }
 
     }
@@ -133,11 +131,9 @@ public class CombinationTesting extends LinearOpMode {
                     telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", rot.firstAngle));
                     telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", rot.secondAngle));
                     telemetry.addLine(String.format("Rotation Roll: %.2f degrees", rot.thirdAngle));
+                    telemetry.update();
                 }
             }
-            telemetry.addData("Coordinate", "(" + (int) cx + ", " + (int) cy + ")");
-            telemetry.addData("Distance in Inch", (getDistance(width)));
-            telemetry.update();
         }
     }
 
@@ -223,7 +219,28 @@ public class CombinationTesting extends LinearOpMode {
         double distance = (objectWidthInRealWorldUnits * focalLength) / width;
         return distance;
     }
+    public void aprilTagMode(){
+        camera.setPipeline(aprilTagDetectionPipeline);
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                camera.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
+            }
 
+            @Override
+            public void onError(int i) {
+
+            }
+        });
+    }
+    public void objectDetectionMode(){
+        camera.openCameraDevice();
+        camera.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
+        camera.setPipeline(new ControlledDetection.YellowBlobDetectionPipeline());
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
+        FtcDashboard.getInstance().startCameraStream(camera, 30);
+    }
 }
 
 
