@@ -28,7 +28,9 @@ public final class AutonomousPre extends LinearOpMode {
 
         Pose2d beginPose = new Pose2d(0, 0, 0);
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
-
+        CameraSystem camera = new CameraSystem(hardwareMap);
+        Firecracker firecracker =  new Firecracker(hardwareMap);
+        Inhaler inhaler = new Inhaler(hardwareMap);
 
         waitForStart();
 
