@@ -26,11 +26,14 @@ public final class AutonomousPre extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        Pose2d beginPose = new Pose2d(0, 0, 0);
-        MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
-        CameraSystem camera = new CameraSystem(hardwareMap);
-        Firecracker firecracker =  new Firecracker(hardwareMap);
-        Inhaler inhaler = new Inhaler(hardwareMap);
+        Pose2d beginPose                = new Pose2d(0, 0, 0);
+        MecanumDrive drive              = new MecanumDrive(hardwareMap, beginPose);
+        CameraSystem camera             = new CameraSystem(hardwareMap);
+        Firecracker rightFirecracker    =  new Firecracker(hardwareMap, "rightFirecracker");
+        Firecracker leftFirecracker     =  new Firecracker(hardwareMap, "leftFirecracker");
+        Inhaler inhaler                 = new Inhaler(hardwareMap);
+        Feeder leftFeeder               = new Feeder(hardwareMap, "leftFeeder");
+        Feeder rightFeeder               = new Feeder(hardwareMap, "rightFeeder");
 
         waitForStart();
 

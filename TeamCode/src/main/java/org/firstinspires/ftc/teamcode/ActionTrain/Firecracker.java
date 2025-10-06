@@ -5,10 +5,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Firecracker {
     private DcMotor firecracker = null;
+    private Feeder feeder;
 
-    public Firecracker(HardwareMap hardwareMap) {
+    public Firecracker(HardwareMap hardwareMap, String deviceName) {
         // Initialize arm motor
-        firecracker = hardwareMap.get(DcMotor.class, "firecracker");
+        firecracker = hardwareMap.get(DcMotor.class, deviceName);
         firecracker.setDirection(DcMotorSimple.Direction.REVERSE); // Adjust if necessary
         firecracker.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         firecracker.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
