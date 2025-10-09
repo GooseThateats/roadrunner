@@ -1,24 +1,29 @@
 package org.firstinspires.ftc.teamcode.ActionTrain;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Inhaler {
-    private CRServo inhale = null;
+    private DcMotorEx inhale = null;
 
-    public static final double INHALE_ON                = 0.0;
+    public static final double INHALE_ON                = 1.0;
     public static final double INHALE_OFF               = 0.0;
-    public static final double OUTWARD                  = 0.0;
 
-    public Inhaler(HardwareMap hardwareMap){
-        this.inhale = hardwareMap.get(CRServo.class, "inhale");
+
+    public Inhaler(HardwareMap hardwareMap, String deviceName){
+        this.inhale = hardwareMap.get(DcMotorEx.class, deviceName);
+    }
+    public void initialize(boolean reverse){
+        if(reverse){
+            inhale.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
+        inhale.setPower(INHALE_OFF);
     }
     public void inhale_on(){
         inhale.setPower(INHALE_ON);
     }
     public void inhale_off(){
         inhale.setPower(INHALE_OFF);
-    }
-    public void outtake(){
-        inhale.setPower(OUTWARD);
     }
 }

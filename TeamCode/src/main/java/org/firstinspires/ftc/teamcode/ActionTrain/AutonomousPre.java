@@ -31,7 +31,7 @@ public final class AutonomousPre extends LinearOpMode {
         CameraSystem camera             = new CameraSystem(hardwareMap);
         Firecracker rightFirecracker    =  new Firecracker(hardwareMap, "rightFirecracker");
         Firecracker leftFirecracker     =  new Firecracker(hardwareMap, "leftFirecracker");
-        Inhaler inhaler                 = new Inhaler(hardwareMap);
+        Inhaler inhaler                 = new Inhaler(hardwareMap, "inhaler");
         Feeder leftFeeder               = new Feeder(hardwareMap, "leftFeeder");
         Feeder rightFeeder               = new Feeder(hardwareMap, "rightFeeder");
 
