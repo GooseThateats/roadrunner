@@ -34,7 +34,15 @@ public final class AutonomousPre extends LinearOpMode {
         Inhaler inhaler                 = new Inhaler(hardwareMap, "inhaler");
         Feeder leftFeeder               = new Feeder(hardwareMap, "leftFeeder");
         Feeder rightFeeder               = new Feeder(hardwareMap, "rightFeeder");
+        boolean reverse = true;
+        boolean notReverse = false;
 
+        //adjust reverse if needed
+        leftFeeder.initialize(reverse);
+        rightFeeder.initialize(notReverse);
+        leftFirecracker.initialize(reverse);
+        rightFirecracker.initialize(notReverse);
+        inhaler.initialize(notReverse);
         waitForStart();
 
         if (opModeIsActive()) {

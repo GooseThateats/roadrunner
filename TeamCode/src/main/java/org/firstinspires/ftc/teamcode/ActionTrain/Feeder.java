@@ -13,10 +13,11 @@ public class Feeder {
     public Feeder(HardwareMap hardwareMap, String deviceName){
         this.feeder = hardwareMap.get(CRServo.class, deviceName);
     }
-    public void initialize(){
+    public void initialize(boolean reverse){
         feeder.setPower(feedOff);
-        feeder.setPower(feedOn);
-        feeder.setDirection(DcMotorSimple.Direction.REVERSE);
+        if(reverse){
+            feeder.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
     }
     public void setRotation(double speed){
         feedOn = speed;
