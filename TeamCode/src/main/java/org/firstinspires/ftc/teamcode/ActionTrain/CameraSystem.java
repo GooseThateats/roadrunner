@@ -31,7 +31,7 @@ public class CameraSystem {
     private double cx = 310.036;
     private double cy = 291.828;
 
-    private double tagsize = 3 * 0.0254; //meters
+    private double tagsize = 4 * 0.0254; //meters
     private int numFramesWithoutDetection = 0;
     private final float DECIMATION_HIGH = 3;
     private final float DECIMATION_LOW = 2;
@@ -97,6 +97,41 @@ public class CameraSystem {
                 }
             }
         }
+    }
+    public int getPattern(){
+        ArrayList<AprilTagDetection> detections = aprilTagDetectionPipeline.getDetectionsUpdate();
+        if (detections != null) {
+
+
+            // If we don't see any tags
+            if (detections.size() == 0) {
+                numFramesWithoutDetection++;
+
+                // If we haven't seen a tag for a few frames, lower the decimation
+                // so we can hopefully pick one up if we're e.g. far back
+                if (numFramesWithoutDetection >= THRESHOLD_NUM_FRAMES_NO_DETECTION_BEFORE_LOW_DECIMATION) {
+                    aprilTagDetectionPipeline.setDecimation(DECIMATION_LOW);
+                }
+            }
+            // We do see tags!
+            else {
+                numFramesWithoutDetection = 0;
+
+                // If the target is within 1 meter, turn on high decimation to
+                // increase the frame rate
+                if (detections.get(0).pose.z < THRESHOLD_HIGH_DECIMATION_RANGE_METERS) {
+                    aprilTagDetectionPipeline.setDecimation(DECIMATION_HIGH);
+                }
+
+                for (AprilTagDetection detection : detections) {
+                    if(detection.id == 21 || detection.id == 22 || detection.id == 23){
+                        return detection.id;
+                    }
+
+                }
+            }
+        }
+        return 0;
     }
     public double getX(){
         return x;
