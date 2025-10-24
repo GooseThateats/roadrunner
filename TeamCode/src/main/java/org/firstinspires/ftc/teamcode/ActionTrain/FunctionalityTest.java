@@ -46,15 +46,18 @@ public final class FunctionalityTest extends LinearOpMode {
             //id 21 GPP
             //id 23 PPG
             //id 22 PGP
+            // press a to start motors
             if(gamepad1.a) {
                 test1.motorTest(0.5);
             }
+            //press b to stop motors
             if(gamepad1.b){
                 test1.stopMotor();
             }
             if(gamepad1.x){
 
             }
+            //right bumper to start detectimg april tag
             if(gamepad1.right_bumper){
                 detectedID = camera.getPattern();
                 if(detectedID == 21){
@@ -73,6 +76,7 @@ public final class FunctionalityTest extends LinearOpMode {
                     rightLight.setGreen();
                 }
             }
+            //left bumper to turn off lights
             if(gamepad1.left_bumper){
                 leftLight.lightOff();
                 middleLight.lightOff();
